@@ -114,7 +114,7 @@ export default function CreatePostPage() {
             const res = await api.post('/posts/publish', {
                 content: { ...selectedOption, text: textToPublish },
                 platforms: selectedPlatforms,
-                scheduled_time: isScheduled ? scheduledTime : undefined
+                scheduled_time: isScheduled ? new Date(scheduledTime).toISOString() : undefined
             });
             setPublishResult(res.data);
         } catch (error) {
