@@ -50,9 +50,9 @@ export default function HistoryPage() {
         try {
             await api.delete(`/posts/${postId}`);
             setPosts(posts.filter(p => p._id !== postId));
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to delete post", error);
-            alert("Failed to delete post");
+            alert(`Failed to delete: ${error.response?.data?.msg || error.message}`);
         }
     };
 
