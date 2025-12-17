@@ -7,6 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 
+import { Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
 interface Post {
     _id: string;
     topic: string;
@@ -41,6 +44,18 @@ export default function HistoryPage() {
         fetchPosts();
     }, []);
 
+    const handleDelete = async (postId: string) => {
+        if (!confirm("Are you sure you want to delete this post?")) return;
+
+        try {
+            await api.delete(`/posts/${postId}`);
+            setPosts(posts.filter(p => p._id !== postId));
+        } catch (error) {
+            console.error("Failed to delete post", error);
+            alert("Failed to delete post");
+        }
+    };
+
     if (loading) {
         return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>;
     }
@@ -68,9 +83,14 @@ export default function HistoryPage() {
                                         <CardTitle className="text-lg">{post.topic || "Untitled Post"}</CardTitle>
                                         <CardDescription>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</CardDescription>
                                     </div>
-                                    <Badge variant={post.status === 'published' ? 'default' : 'secondary'}>
-                                        {post.status}
-                                    </Badge>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant={post.status === 'published' ? 'default' : 'secondary'}>
+                                            {post.status}
+                                        </Badge>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(post._id)}>
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
                             </CardHeader>
                             <CardContent>
