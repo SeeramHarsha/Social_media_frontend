@@ -94,12 +94,12 @@ export default function HistoryPage() {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4">
                                     {post.content.images && post.content.images.length > 0 && (
                                         <img
                                             src={post.content.images[0].url}
                                             alt="Post"
-                                            className="w-24 h-24 object-cover rounded-md border"
+                                            className="w-full h-48 sm:w-24 sm:h-24 object-cover rounded-md border"
                                         />
                                     )}
                                     <div className="flex-1 space-y-2">

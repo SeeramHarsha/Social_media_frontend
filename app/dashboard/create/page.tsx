@@ -110,7 +110,7 @@ export default function CreatePostPage() {
     };
 
     return (
-        <div className="space-y-6 max-w-2xl mx-auto">
+        <div className="space-y-6 w-full max-w-2xl mx-auto">
             <div>
                 <h2 className="text-3xl font-bold tracking-tight">Create Post</h2>
                 <p className="text-muted-foreground">Manually create and publish content.</p>
@@ -164,7 +164,7 @@ export default function CreatePostPage() {
                         {accounts.length === 0 ? (
                             <p className="text-sm text-muted-foreground">No accounts connected.</p>
                         ) : (
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {accounts.map((acc) => (
                                     <div key={acc._id} className="flex items-center space-x-2 border p-3 rounded-md">
                                         <Checkbox

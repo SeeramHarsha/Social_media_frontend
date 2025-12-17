@@ -206,7 +206,7 @@ export default function CreatePostPage() {
                         <h3 className="text-xl font-semibold">Select a Post Option</h3>
                         <Button variant="outline" onClick={() => setGeneratedOptions([])}>Back to Topic</Button>
                     </div>
-                    <div className="grid gap-6 md:grid-cols-3">
+                    <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
                         {generatedOptions.map((option, index) => (
                             <Card key={index} className="cursor-pointer hover:border-blue-500 transition-colors" onClick={() => setSelectedOption(option)}>
                                 <CardHeader>
