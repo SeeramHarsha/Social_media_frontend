@@ -39,6 +39,7 @@ export default function CreatePostPage() {
     // Scheduling State
     const [isScheduled, setIsScheduled] = useState(false);
     const [scheduledTime, setScheduledTime] = useState('');
+    const [useAiSchedule, setUseAiSchedule] = useState(false);
 
     const [keywords, setKeywords] = useState<string[]>([]);
     const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
@@ -54,7 +55,7 @@ export default function CreatePostPage() {
             }
         };
         fetchAccounts();
-        fetchAccounts();
+        // fetchAccounts(); // duplicate call
     }, []);
 
     const handleGenerateKeywords = async () => {
@@ -114,7 +115,8 @@ export default function CreatePostPage() {
             const res = await api.post('/posts/publish', {
                 content: { ...selectedOption, text: textToPublish },
                 platforms: selectedPlatforms,
-                scheduled_time: isScheduled ? new Date(scheduledTime).toISOString() : undefined
+                scheduled_time: isScheduled && !useAiSchedule ? new Date(scheduledTime).toISOString() : undefined,
+                schedule_type: isScheduled && useAiSchedule ? 'ai' : undefined
             });
             setPublishResult(res.data);
         } catch (error) {
@@ -370,14 +372,35 @@ export default function CreatePostPage() {
                                     </div>
 
                                     {isScheduled && (
-                                        <div className="space-y-2">
-                                            <Label>Select Date & Time</Label>
-                                            <Input
-                                                type="datetime-local"
-                                                value={scheduledTime}
-                                                onChange={(e) => setScheduledTime(e.target.value)}
-                                            />
-                                            <p className="text-xs text-muted-foreground">Select a future date and time.</p>
+                                        <div className="space-y-4 pl-6 border-l-2">
+                                            <div className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id="aischedule"
+                                                    checked={useAiSchedule}
+                                                    onCheckedChange={(checked) => setUseAiSchedule(checked as boolean)}
+                                                />
+                                                <Label htmlFor="aischedule" className="cursor-pointer flex items-center">
+                                                    <Sparkles className="h-3 w-3 mr-1 text-purple-500" />
+                                                    Smart Schedule (AI Recommended)
+                                                </Label>
+                                            </div>
+
+                                            {!useAiSchedule && (
+                                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                    <Label>Select Date & Time</Label>
+                                                    <Input
+                                                        type="datetime-local"
+                                                        value={scheduledTime}
+                                                        onChange={(e) => setScheduledTime(e.target.value)}
+                                                    />
+                                                    <p className="text-xs text-muted-foreground">Select a future date and time.</p>
+                                                </div>
+                                            )}
+                                            {useAiSchedule && (
+                                                <p className="text-sm text-muted-foreground italic">
+                                                    AI will analyze your content and pick the best engagement time for the next 24 hours.
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -386,7 +409,7 @@ export default function CreatePostPage() {
                                 <Button
                                     className="w-full"
                                     onClick={handlePublish}
-                                    disabled={publishing || selectedPlatforms.length === 0 || (isScheduled && !scheduledTime)}
+                                    disabled={publishing || selectedPlatforms.length === 0 || (isScheduled && !useAiSchedule && !scheduledTime)}
                                 >
                                     {publishing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     <Send className="mr-2 h-4 w-4" />
